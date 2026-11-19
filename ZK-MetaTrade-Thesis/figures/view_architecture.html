@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZK-MetaTrade - Hyperledger Fabric Dual Architecture Viewer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', 'Hind Siliguri', sans-serif; background-color: #0b0f19; color: #f1f5f9; }
+    .mono { font-family: 'Fira Code', monospace; }
+  </style>
+</head>
+<body class="p-6 md:p-10 min-h-screen">
+  <div class="max-w-7xl mx-auto space-y-12">
+    
+    <!-- Top Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-gray-800">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-mono font-bold mb-2 border border-blue-500/30">
+          <span>HYPERLEDGER FABRIC v2.5 ENTERPRISE ARCHITECTURE SUITE</span>
+        </div>
+        <h1 class="text-3xl font-extrabold text-white">ZK-MetaTrade কনসোর্টিয়াম আর্কিটেকচার ডায়াগ্রাম সেট</h1>
+        <p class="text-gray-400 text-sm mt-1">ResearchGate স্টাইল এবং IBM / Linux Foundation অফিসিয়াল ক্যানোনিক্যাল টপোলজি</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="#fig8-section" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow-lg transition">
+          View Fig 8 (IBM Canonical) ↓
+        </a>
+        <a href="fig8_hyperledger_canonical_topology.png" download class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold rounded-lg border border-gray-700 transition">
+          Download Fig 8 PNG
+        </a>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 1: FIGURE 8 (IBM / LINUX FOUNDATION CANONICAL TOPOLOGY)   -->
+    <!-- ================================================================= -->
+    <div id="fig8-section" class="space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-mono font-bold text-purple-400 uppercase tracking-wider">OFFICIAL FABRIC ARCHITECTURAL MODEL</span>
+          <h2 class="text-2xl font-bold text-white mt-1">FIGURE 8: ক্যানোনিক্যাল চ্যানেল, পিয়ার, চেইনকোড ও অর্ডারার টপোলজি</h2>
+          <p class="text-xs text-gray-400">IBM ও Linux Foundation অফিসিয়াল ডকুমেন্টের হুবহু স্ট্যান্ডার্ডে ZK-MetaTrade-এর ৩-অর্গানাইজেশন মডেল</p>
+        </div>
+        <a href="fig8_hyperledger_canonical_topology.png" target="_blank" class="text-xs font-mono text-purple-400 hover:underline">
+          Open 300 DPI Original →
+        </a>
+      </div>
+
+      <!-- Image Box -->
+      <div class="bg-gray-900/80 rounded-2xl p-4 md:p-6 border border-purple-500/30 shadow-2xl overflow-hidden">
+        <div class="bg-white rounded-xl p-3 shadow-inner overflow-x-auto flex justify-center">
+          <img src="fig8_hyperledger_canonical_topology.png" alt="Canonical Hyperledger Topology" class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+        </div>
+      </div>
+
+      <!-- Explanatory Breakdown for Figure 8 -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+        
+        <div class="bg-gray-900/60 p-4 rounded-xl border border-purple-500/30">
+          <div class="text-purple-400 font-bold font-mono mb-1">A1..A3 & CAs (Client Tier)</div>
+          <p class="text-gray-300 leading-relaxed">
+            <strong>A1:</strong> Buyer App (Org1)<br>
+            <strong>A2:</strong> Seller App (Org2)<br>
+            <strong>A3:</strong> Trainer App (Org3)<br>
+            <strong>CA0..CA3:</strong> প্রতিটি অর্গানাইজেশন এবং অর্ডারারের নিজস্ব Certificate Authority।
+          </p>
+        </div>
+
+        <div class="bg-gray-900/60 p-4 rounded-xl border border-blue-500/30">
+          <div class="text-blue-400 font-bold font-mono mb-1">C1 & C2 (Channel Tier)</div>
+          <p class="text-gray-300 leading-relaxed">
+            <strong>C1 ('mychannel'):</strong> AIGC বেচাকেনা ও অ্যাসেট রেজিস্ট্রির জন্য সবার শেয়ার্ড চ্যানেল।<br>
+            <strong>C2 ('auditchannel'):</strong> মাল্টি-প্যারেন্ট রয়্যালটি ও টোকেন সেটেলমেন্টের বিশেষায়িত অডিট চ্যানেল।
+          </p>
+        </div>
+
+        <div class="bg-gray-900/60 p-4 rounded-xl border border-emerald-500/30">
+          <div class="text-emerald-400 font-bold font-mono mb-1">P1..P3 & O (Peer & Orderer)</div>
+          <p class="text-gray-300 leading-relaxed">
+            <strong>P1..P3:</strong> তিনটি অর্গানাইজেশনের পিয়ার নোড। প্রত্যেকের কাছে চেইনকোড ব্যাজ (S1, S2) ও লেজার ফ্ল্যাগ (L1, L2) রয়েছে।<br>
+            <strong>O:</strong> ৩০টি Raft Orderer নোডের ক্লাস্টার, যা দুটি চ্যানেলেই (Plug 1 ও 2) প্লাগড।
+          </p>
+        </div>
+
+        <div class="bg-gray-900/60 p-4 rounded-xl border border-rose-500/30">
+          <div class="text-rose-400 font-bold font-mono mb-1">CC1.1 & CC2 (Chaincodes)</div>
+          <p class="text-gray-300 leading-relaxed">
+            <strong>CC1.1 (dam v1.3):</strong> R1, R2, R3 এন্ডোর্সমেন্ট পলিসি সহ ডিজিটাল অ্যাসেট কোড।<br>
+            <strong>CC2 (tokenERC20):</strong> <code class="text-rose-300">_transferMulti</code> ইন-মেমোরি ইঞ্জিন, যা ফ্যাব্রিকের RYOW বাগ দূর করে।
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 2: FIGURE 5 (RESEARCHGATE ENTERPRISE ARCHITECTURE)        -->
+    <!-- ================================================================= -->
+    <div id="fig5-section" class="pt-8 border-t border-gray-800 space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-xs font-mono font-bold text-blue-400 uppercase tracking-wider">RESEARCHGATE ENTERPRISE MODEL</span>
+          <h2 class="text-2xl font-bold text-white mt-1">FIGURE 5: সহজ ও দৃষ্টিনন্দন হাই-লেভেল আর্কিটেকচার</h2>
+          <p class="text-xs text-gray-400">ResearchGate স্টাইলে তৈরি ইউজার, REST গেটওয়ে, CouchDB ও ৩০-অর্ডারার কনসোর্টিয়াম মডেল</p>
+        </div>
+        <a href="fig5_easy_consortium_architecture.png" target="_blank" class="text-xs font-mono text-blue-400 hover:underline">
+          Open 300 DPI Original →
+        </a>
+      </div>
+
+      <!-- Image Box -->
+      <div class="bg-gray-900/80 rounded-2xl p-4 md:p-6 border border-blue-500/30 shadow-2xl overflow-hidden">
+        <div class="bg-white rounded-xl p-3 shadow-inner overflow-x-auto flex justify-center">
+          <img src="fig5_easy_consortium_architecture.png" alt="Enterprise Consortium Architecture" class="max-w-full h-auto rounded-lg shadow-md border border-gray-200">
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

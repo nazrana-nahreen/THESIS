@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZK-MetaTrade: Trust-Free AIGC Marketplace & ZK Verification Protocol</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#0a0e17] text-gray-100 min-h-screen flex flex-col selection:bg-cyan-500 selection:text-black">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="border-b border-gray-800 bg-[#0d131f]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-purple-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">ZK-MetaTrade</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">DApp v2.0</span>
+          </div>
+          <p class="text-[10px] text-gray-400 hidden sm:block">Zero-Knowledge Contingent Fair Exchange & Multi-Parent DAG Royalties</p>
+        </div>
+      </div>
+
+      <!-- Network and Wallet Status -->
+      <div class="flex items-center gap-3">
+        <!-- Dual Network Mode Badge -->
+        <div class="hidden md:flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-lg p-1 text-xs font-mono">
+          <span class="px-2 py-1 rounded bg-blue-950 text-blue-400 border border-blue-800/50 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span> Ethereum (EVM)
+          </span>
+          <span class="px-2 py-1 rounded bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-purple-400"></span> Fabric (30 Raft)
+          </span>
+        </div>
+
+        <!-- Wallet Connected Pill -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-900/90 border border-gray-700 text-xs">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="font-mono text-gray-300 hidden sm:inline">0x7099...79C8 (Bob)</span>
+          <span class="font-bold text-cyan-400 ml-1" id="buyerBalEthTop">10.00 ETH</span>
+        </div>
+
+        <!-- Reset Button -->
+        <button onclick="resetSimulationState()" title="Reset All Balances" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition">
+          <i class="fa-solid fa-arrows-rotate"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MULTI-ACCOUNT LIVE BALANCE TICKER BAR -->
+  <section class="bg-gray-950/60 border-b border-gray-800/80 px-4 py-2.5 text-xs font-mono">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-gray-400">
+        <i class="fa-solid fa-chart-line text-cyan-400"></i>
+        <span class="font-bold text-gray-300">Live Ledger Balances:</span>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 sm:gap-6 text-gray-300">
+        <div>
+          <span class="text-gray-500">Buyer Bob:</span>
+          <span class="font-bold text-cyan-400 ml-1" id="buyerBalEth">10.00 ETH</span>
+          <span class="text-gray-600 text-[10px]" id="buyerBalTokens">(1000 TKN)</span>
+        </div>
+        <div>
+          <span class="text-gray-500">Seller Alice:</span>
+          <span class="font-bold text-emerald-400 ml-1" id="sellerBalEth">0.00 ETH</span>
+          <span class="text-gray-600 text-[10px]" id="sellerBalTokens">(0 TKN)</span>
+        </div>
+        <div>
+          <span class="text-gray-500">SDXL Model:</span>
+          <span class="font-bold text-purple-400 ml-1" id="parent1BalEth">0.00 ETH</span>
+        </div>
+        <div>
+          <span class="text-gray-500">Cyberpunk LoRA:</span>
+          <span class="font-bold text-pink-400 ml-1" id="parent2BalEth">0.00 ETH</span>
+        </div>
+        <div>
+          <span class="text-gray-500">ControlNet Depth:</span>
+          <span class="font-bold text-amber-400 ml-1" id="parent3BalEth">0.00 ETH</span>
+        </div>
+        <div>
+          <span class="text-gray-500">Escrow Address:</span>
+          <span class="font-bold text-rose-400 ml-1" id="escrowBalEth">0.00 ETH</span>
+          <span class="text-gray-600 text-[10px]" id="escrowBalTokens">(0 TKN)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAVIGATION TABS -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+    <div class="flex flex-wrap items-center border-b border-gray-800 gap-2">
+      <button onclick="switchTab('marketplace')" id="btnTab_marketplace" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-cyan-500 text-cyan-400 bg-cyan-950/30 rounded-t-lg transition flex items-center gap-2">
+        <i class="fa-solid fa-store"></i> AIGC Marketplace & Gallery
+      </button>
+      <button onclick="switchTab('attack_lab')" id="btnTab_attack_lab" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 rounded-t-lg transition flex items-center gap-2">
+        <i class="fa-solid fa-skull-crossbones"></i> Attack & Defense Lab (Poison Key vs. ZK)
+      </button>
+      <button onclick="switchTab('dag_visualizer')" id="btnTab_dag_visualizer" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 rounded-t-lg transition flex items-center gap-2">
+        <i class="fa-solid fa-sitemap"></i> DAG Multi-Parent Royalties
+      </button>
+      <button onclick="switchTab('telemetry')" id="btnTab_telemetry" class="tab-btn px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 rounded-t-lg transition flex items-center gap-2">
+        <i class="fa-solid fa-server"></i> Dual-Blockchain Benchmarks
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: AIGC MARKETPLACE -->
+    <!-- =================================================================== -->
+    <div id="tab_marketplace" class="tab-content space-y-6">
+      
+      <!-- Banner -->
+      <div class="glass-panel p-6 relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-3xl">
+          <span class="text-xs font-mono font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/60 px-2.5 py-1 rounded border border-cyan-800">
+            Provably Fair Metaverse Trading
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-3 leading-tight">
+            Next-Gen AIGC Assets with Autonomous ZK Settlement
+          </h1>
+          <p class="text-sm text-gray-400 mt-2 leading-relaxed">
+            Every transaction is safeguarded by <strong>Groth16 zk-SNARKs</strong> (eliminating bogus key theft) and automatically settles royalties across multi-tier AI ancestors (Foundation Models, LoRAs, and ControlNets).
+          </p>
+        </div>
+      </div>
+
+      <!-- Asset Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- CARD 1: Cyber Car 3D -->
+        <div class="glass-panel overflow-hidden border border-gray-800 hover:border-cyan-500/50 transition duration-300 flex flex-col group">
+          <div class="h-48 overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&auto=format&fit=crop&q=60" alt="Aerocar" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded text-[11px] font-mono text-cyan-400 border border-cyan-800">
+              3 Ancestor Models
+            </div>
+            <div class="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded font-bold text-white text-sm">
+              1.00 ETH <span class="text-xs font-normal text-gray-400">(100 TKN)</span>
+            </div>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition">Cyberpunk Aerocar 3D Asset</h3>
+              <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">
+                Rigged high-poly metaverse vehicle. Synthesized with SDXL foundation, cyberpunk style LoRA, and ControlNet depth maps.
+              </p>
+              
+              <!-- DAG Ancestor Breakdown -->
+              <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] space-y-1.5">
+                <div class="text-gray-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-code-branch text-purple-400"></i> DAG Ancestor Lineage:
+                </div>
+                <div class="flex justify-between text-gray-300">
+                  <span>• SDXL 1.0 (Stability AI)</span>
+                  <span class="text-purple-400 font-mono font-semibold">10% (0.1 ETH)</span>
+                </div>
+                <div class="flex justify-between text-gray-300">
+                  <span>• Cyberpunk Style LoRA</span>
+                  <span class="text-pink-400 font-mono font-semibold">10% (0.1 ETH)</span>
+                </div>
+                <div class="flex justify-between text-gray-300">
+                  <span>• ControlNet Depth Map</span>
+                  <span class="text-amber-400 font-mono font-semibold">5% (0.05 ETH)</span>
+                </div>
+                <div class="flex justify-between text-gray-300 pt-1 border-t border-gray-800/60 font-semibold">
+                  <span class="text-cyan-400">• Creator Alice Share</span>
+                  <span class="text-emerald-400 font-mono">75% (0.75 ETH)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <button onclick="simulateHonestDAGTrade('cyber_car_3d')" id="btnBuy_cyber_car_3d" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs tracking-wider uppercase transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i> Buy & Settle with ZK-SNARK
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2: Neural Avatar -->
+        <div class="glass-panel overflow-hidden border border-gray-800 hover:border-purple-500/50 transition duration-300 flex flex-col group">
+          <div class="h-48 overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60" alt="Avatar" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded text-[11px] font-mono text-purple-400 border border-purple-800">
+              2 Ancestor Models
+            </div>
+            <div class="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded font-bold text-white text-sm">
+              0.50 ETH <span class="text-xs font-normal text-gray-400">(50 TKN)</span>
+            </div>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white group-hover:text-purple-400 transition">Neural Metaverse Avatar V2</h3>
+              <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">
+                Dynamic humanoid avatar featuring neural blendshapes, realistic hair physics, and text-to-speech audio rig.
+              </p>
+              
+              <!-- DAG Ancestor Breakdown -->
+              <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] space-y-1.5">
+                <div class="text-gray-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-code-branch text-purple-400"></i> DAG Ancestor Lineage:
+                </div>
+                <div class="flex justify-between text-gray-300">
+                  <span>• SDXL 1.0 (Stability AI)</span>
+                  <span class="text-purple-400 font-mono font-semibold">10% (0.05 ETH)</span>
+                </div>
+                <div class="flex justify-between text-gray-300">
+                  <span>• Avatar Blendshape LoRA</span>
+                  <span class="text-pink-400 font-mono font-semibold">15% (0.075 ETH)</span>
+                </div>
+                <div class="flex justify-between text-gray-300 pt-1 border-t border-gray-800/60 font-semibold">
+                  <span class="text-cyan-400">• Creator Alice Share</span>
+                  <span class="text-emerald-400 font-mono">75% (0.375 ETH)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <button onclick="simulateHonestDAGTrade('neural_avatar_v2')" id="btnBuy_neural_avatar_v2" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white font-bold text-xs tracking-wider uppercase transition shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i> Buy & Settle with ZK-SNARK
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: Holo Katana (Root) -->
+        <div class="glass-panel overflow-hidden border border-gray-800 hover:border-emerald-500/50 transition duration-300 flex flex-col group">
+          <div class="h-48 overflow-hidden relative">
+            <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=800&auto=format&fit=crop&q=60" alt="Katana" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+            <div class="absolute top-3 left-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded text-[11px] font-mono text-emerald-400 border border-emerald-800">
+              Root Model (0 Ancestors)
+            </div>
+            <div class="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md px-2.5 py-1 rounded font-bold text-white text-sm">
+              0.80 ETH <span class="text-xs font-normal text-gray-400">(50 TKN)</span>
+            </div>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition">Quantum Holo-Katana</h3>
+              <p class="text-xs text-gray-400 mt-1.5 leading-relaxed">
+                Standalone procedural weapon asset with custom shaders. Verified root model with zero dependency fees.
+              </p>
+              
+              <!-- DAG Ancestor Breakdown -->
+              <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] space-y-1.5">
+                <div class="text-gray-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="fa-solid fa-check-double text-emerald-400"></i> Pure Root Asset:
+                </div>
+                <div class="text-gray-400 italic">No parent royalty deduction.</div>
+                <div class="flex justify-between text-gray-300 pt-1 border-t border-gray-800/60 font-semibold">
+                  <span class="text-cyan-400">• Creator Alice Share</span>
+                  <span class="text-emerald-400 font-mono">100% (0.80 ETH)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <button onclick="simulateHonestDAGTrade('holo_katana')" id="btnBuy_holo_katana" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs tracking-wider uppercase transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-lock"></i> Buy & Settle with ZK-SNARK
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: ATTACK & DEFENSE LAB -->
+    <!-- =================================================================== -->
+    <div id="tab_attack_lab" class="tab-content hidden space-y-6">
+      
+      <!-- Comparison Header -->
+      <div class="glass-panel p-6 border-l-4 border-rose-500">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-vial-virus text-rose-400"></i>
+          Interactive Cryptographic Attack & Defense Lab
+        </h2>
+        <p class="text-xs text-gray-400 mt-1.5">
+          Execute the <strong>Poison Key Attack</strong> live against MetaTrade's original contract, and contrast it with ZK-MetaTrade's on-chain <strong>zk-SNARK verification defense</strong>.
+        </p>
+      </div>
+
+      <!-- Split Screen: Left (MetaTrade Broken) vs. Right (ZK-MetaTrade Defense) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- LEFT: ORIGINAL METATRADE (VULNERABLE) -->
+        <div class="glass-panel p-6 border-rose-900/60 hover:border-rose-500/40 transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="font-bold text-white">MetaTrade (IEEE Access '24)</span>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-950 text-rose-400 border border-rose-800">VULNERABLE</span>
+            </div>
+
+            <div class="mt-4 space-y-3 text-xs text-gray-300">
+              <p>
+                <strong>The Vulnerability:</strong> In <code>DigitalAssetContract.sol</code>, the contract only verifies that the ciphertext hash reported by the buyer matches the seller's commitment ($H_c == H$).
+              </p>
+              <div class="p-3 rounded-lg bg-black/60 font-mono text-[11px] text-gray-400 border border-gray-800 space-y-1">
+                <div>1. Seller commits genuine H = SHA256(D_enc)</div>
+                <div>2. Seller supplies <span class="text-rose-400 font-bold">K_poison ≠ K_real</span></div>
+                <div>3. Buyer checks H_c == H -> <span class="text-emerald-400">TRUE</span></div>
+                <div>4. Contract releases 1.0 ETH to Seller!</div>
+                <div>5. Buyer tries decryption -> <span class="text-rose-400">FAIL!</span></div>
+              </div>
+            </div>
+
+            <!-- Result Alert Banner -->
+            <div id="attackResultBanner" class="mt-4 hidden"></div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-gray-800">
+            <button onclick="simulatePoisonKeyMetaTrade()" id="btnRunPoisonAttack" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-600 to-red-700 hover:from-rose-500 hover:to-red-600 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/20 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-radiation"></i> Execute Poison Key Exploit
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: ZK-METATRADE (PROVABLY SECURE) -->
+        <div class="glass-panel p-6 border-cyan-900/60 hover:border-cyan-500/40 transition flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
+                <span class="font-bold text-white">ZK-MetaTrade (Our Framework)</span>
+              </div>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">PROTECTED</span>
+            </div>
+
+            <div class="mt-4 space-y-3 text-xs text-gray-300">
+              <p>
+                <strong>The Cryptographic Fix:</strong> In <code>ZKDigitalAssetContract.sol</code>, seller must submit a zk-SNARK proof $\pi$ generated from <code>fair_exchange.circom</code> proving key-ciphertext encapsulation before payment release.
+              </p>
+              <div class="p-3 rounded-lg bg-black/60 font-mono text-[11px] text-gray-400 border border-gray-800 space-y-1">
+                <div>1. Seller submits proof π from Circom circuit</div>
+                <div>2. Contract calls IVerifier.verifyProof(A,B,C,pub)</div>
+                <div>3. If seller supplies K_poison -> <span class="text-rose-400">Proof INVALID</span></div>
+                <div>4. Contract <span class="text-cyan-400 font-bold">REVERTS ATOMICALLY</span></div>
+                <div>5. Buyer 1.0 ETH remains 100% safe!</div>
+              </div>
+            </div>
+
+            <!-- Defense Alert Banner -->
+            <div id="defenseResultBanner" class="mt-4 hidden"></div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-gray-800">
+            <button onclick="simulateZKDefense()" id="btnRunZKDefense" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-500 hover:to-blue-600 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-shield-virus"></i> Test zk-SNARK Defense
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <!-- =================================================================== -->
+    <div id="tab_dag_visualizer" class="tab-content hidden space-y-6">
+      
+      <div class="glass-panel p-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-network-wired text-purple-400"></i>
+          Multi-Tier Generative AI Lineage & DAG Micro-Royalties
+        </h2>
+        <p class="text-xs text-gray-400 mt-1.5">
+          Modern AIGC relies on collaborative multi-model synthesis pipelines. MetaTrade's single-parent restriction broke this pipeline; ZK-MetaTrade natively models dependency graphs as a Directed Acyclic Graph (DAG).
+        </p>
+      </div>
+
+      <!-- Interactive SVG / Visual Diagram -->
+      <div class="glass-panel p-6 overflow-hidden">
+        <div class="text-xs font-mono text-gray-400 mb-4 flex items-center justify-between">
+          <span>GRAPH VISUALIZATION: Dynamic Revenue Routing for Cyberpunk Aerocar (1.0 ETH)</span>
+          <span class="text-emerald-400 font-bold">100% Conservation Verified</span>
+        </div>
+
+        <div class="relative bg-gray-950/80 p-8 rounded-xl border border-gray-800 flex flex-col items-center">
+          
+          <!-- Layer 1: Ancestors -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl text-center">
+            
+            <div class="p-4 rounded-xl bg-purple-950/40 border border-purple-500/40 node-active">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-purple-600 flex items-center justify-center text-white mb-2">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <div class="font-bold text-sm text-purple-200">SDXL 1.0 Foundation</div>
+              <div class="text-[11px] text-gray-400">Stability AI (Base Diffusion)</div>
+              <div class="mt-2 text-xs font-mono font-bold text-emerald-400 bg-black/50 py-1 px-2 rounded border border-purple-800">
+                10% Royalty (+0.10 ETH)
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-pink-950/40 border border-pink-500/40 node-active">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-pink-600 flex items-center justify-center text-white mb-2">
+                <i class="fa-solid fa-palette"></i>
+              </div>
+              <div class="font-bold text-sm text-pink-200">Cyberpunk LoRA</div>
+              <div class="text-[11px] text-gray-400">Community Trainer (Style Rig)</div>
+              <div class="mt-2 text-xs font-mono font-bold text-emerald-400 bg-black/50 py-1 px-2 rounded border border-pink-800">
+                10% Royalty (+0.10 ETH)
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-amber-950/40 border border-amber-500/40 node-active">
+              <div class="w-8 h-8 mx-auto rounded-lg bg-amber-600 flex items-center justify-center text-white mb-2">
+                <i class="fa-solid fa-cube"></i>
+              </div>
+              <div class="font-bold text-sm text-amber-200">ControlNet Depth</div>
+              <div class="text-[11px] text-gray-400">Stanford Rig (Structural Guide)</div>
+              <div class="mt-2 text-xs font-mono font-bold text-emerald-400 bg-black/50 py-1 px-2 rounded border border-amber-800">
+                5% Royalty (+0.05 ETH)
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Flow Down Arrows -->
+          <div class="py-6 flex justify-around w-full max-w-4xl text-gray-600 text-lg">
+            <div><i class="fa-solid fa-arrow-down-long animate-bounce text-purple-400"></i></div>
+            <div><i class="fa-solid fa-arrow-down-long animate-bounce text-pink-400"></i></div>
+            <div><i class="fa-solid fa-arrow-down-long animate-bounce text-amber-400"></i></div>
+          </div>
+
+          <!-- Layer 2: Asset & Seller -->
+          <div class="w-full max-w-md p-5 rounded-xl bg-cyan-950/40 border border-cyan-500/50 text-center shadow-xl shadow-cyan-500/10">
+            <div class="w-10 h-10 mx-auto rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white mb-2 text-lg">
+              <i class="fa-solid fa-car-side"></i>
+            </div>
+            <div class="font-bold text-base text-white">Composed AIGC Asset: Aerocar 3D</div>
+            <div class="text-xs text-gray-400 mt-1">Creator / Seller Alice (Primary Synthesizer)</div>
+            <div class="mt-3 flex items-center justify-center gap-3">
+              <span class="text-xs font-mono font-bold text-emerald-400 bg-black/60 py-1.5 px-3 rounded-lg border border-cyan-800">
+                Seller Net: 75% (+0.75 ETH)
+              </span>
+              <span class="text-xs font-mono font-bold text-gray-300 bg-gray-900 py-1.5 px-3 rounded-lg border border-gray-700">
+                Total Price: 1.00 ETH
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: DUAL-BLOCKCHAIN TELEMETRY -->
+    <!-- =================================================================== -->
+    <div id="tab_telemetry" class="tab-content hidden space-y-6">
+      
+      <!-- Telemetry Header -->
+      <div class="glass-panel p-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+          Dual-Blockchain Comparative Evaluation
+        </h2>
+        <p class="text-xs text-gray-400 mt-1.5">
+          Comprehensive empirical measurements across public Ethereum (EVM) Gas and consortium Hyperledger Fabric v2.5 (30 Raft Orderers).
+        </p>
+      </div>
+
+      <!-- EVM vs. Fabric Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Public Chain: Gas Table -->
+        <div class="glass-panel p-6">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
+            <span class="font-bold text-sm text-cyan-400 flex items-center gap-2">
+              <i class="fa-brands fa-ethereum"></i> Ethereum On-Chain Gas Profiling
+            </span>
+            <span class="text-[10px] font-mono text-gray-400">@ 10 gwei, $1894/ETH</span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="text-gray-400 border-b border-gray-800 pb-2">
+                <tr>
+                  <th class="py-2">Operation</th>
+                  <th class="py-2">MetaTrade</th>
+                  <th class="py-2 text-cyan-400">ZK-MetaTrade</th>
+                  <th class="py-2 text-right">Cost (USD)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800/60 text-gray-300">
+                <tr>
+                  <td class="py-2.5">listAsset (Clone)</td>
+                  <td class="py-2.5 text-gray-500">159,133</td>
+                  <td class="py-2.5 text-cyan-300 font-bold">164,220</td>
+                  <td class="py-2.5 text-right">$3.11</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">registerRequest</td>
+                  <td class="py-2.5 text-gray-500">59,082</td>
+                  <td class="py-2.5 text-cyan-300 font-bold">61,450</td>
+                  <td class="py-2.5 text-right">$1.16</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">grantAccess (ZK)</td>
+                  <td class="py-2.5 text-gray-500">101,676</td>
+                  <td class="py-2.5 text-purple-300 font-bold">289,540</td>
+                  <td class="py-2.5 text-right">$5.48</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">compareHashes (DAG)</td>
+                  <td class="py-2.5 text-gray-500">89,875</td>
+                  <td class="py-2.5 text-cyan-300 font-bold">114,320</td>
+                  <td class="py-2.5 text-right">$2.16</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5">withdrawFund</td>
+                  <td class="py-2.5 text-gray-500">28,549</td>
+                  <td class="py-2.5 text-cyan-300 font-bold">29,110</td>
+                  <td class="py-2.5 text-right">$0.55</td>
+                </tr>
+                <tr class="font-bold text-white bg-gray-900/40">
+                  <td class="py-3">Full Trade Cycle</td>
+                  <td class="py-3 text-gray-400">250,633</td>
+                  <td class="py-3 text-emerald-400">465,310</td>
+                  <td class="py-3 text-right text-emerald-400">$8.81</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-[11px] text-gray-400 mt-3 italic">
+            *Analysis: The +187k gas difference represents elliptic curve pairing precompile verification, mathematically guaranteeing complete fair exchange at < $9.00 USD total.
+          </p>
+        </div>
+
+        <!-- Consortium Chain: Hyperledger Fabric Live Findings -->
+        <div class="glass-panel p-6">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-800 mb-4">
+            <span class="font-bold text-sm text-purple-400 flex items-center gap-2">
+              <i class="fa-solid fa-cubes"></i> Hyperledger Fabric v2.5 (30 Raft Orderers)
+            </span>
+            <span class="text-[10px] font-mono text-emerald-400 font-bold">VERIFIED ON LIVE TESTBED</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="p-3 rounded-lg bg-black/60 border border-gray-800 space-y-1 font-mono">
+              <div class="text-cyan-400 font-bold flex items-center justify-between">
+                <span>1. Network Topology:</span>
+                <span class="text-emerald-400">30 Orderers + 2 Peers</span>
+              </div>
+              <div class="text-gray-400 text-[11px]">Raft Consensus on `mychannel` with TLS mutual auth.</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-black/60 border border-gray-800 space-y-1 font-mono">
+              <div class="text-rose-400 font-bold flex items-center justify-between">
+                <span>2. RYOW Concurrency Bug:</span>
+                <span class="text-rose-400">SOLVED via _transferMulti</span>
+              </div>
+              <div class="text-gray-400 text-[11px]">Fabric's lack of Read-Your-Own-Writes created 10 ghost tokens in MetaTrade. Our in-memory aggregation restored zero-loss conservation.</div>
+            </div>
+
+            <div class="p-3 rounded-lg bg-black/60 border border-gray-800 space-y-1 font-mono">
+              <div class="text-emerald-400 font-bold flex items-center justify-between">
+                <span>3. Token Conservation Formula:</span>
+                <span class="text-emerald-400">850 + 90 + 60 = 1000</span>
+              </div>
+              <div class="text-gray-400 text-[11px]">Buyer (850) + Seller (90) + Ancestor (60) = Exactly 1000 Tokens!</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Architecture Diagram Showcase -->
+      <div class="glass-panel p-6 mt-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-gray-800 gap-3">
+          <div>
+            <h3 class="font-bold text-sm text-cyan-400 flex items-center gap-2">
+              <i class="fa-solid fa-sitemap"></i> High-Level Enterprise Architecture (Hyperledger Fabric v2.5)
+            </h3>
+            <p class="text-[11px] text-gray-400 mt-0.5">Intuitive ResearchGate-style breakdown of the 30-Orderer Raft Cluster, 2 Peer Orgs, and Chaincode Execution.</p>
+          </div>
+          <a href="../figures/view_architecture.html" target="_blank" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-cyan-600/20">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Full Interactive View
+          </a>
+        </div>
+        <div class="mt-4 bg-white p-3 rounded-xl overflow-hidden shadow-inner flex justify-center">
+          <img src="../figures/fig5_easy_consortium_architecture.png" alt="Architecture Diagram" class="max-w-full h-auto rounded-lg">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- REAL-TIME PROTOCOL LOGS STREAM -->
+    <!-- =================================================================== -->
+    <div class="mt-8 glass-panel p-5">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-800">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-terminal text-cyan-400"></i>
+          <span class="font-bold text-sm text-white">Live Cryptographic Audit Trail & Event Stream</span>
+        </div>
+        <button onclick="document.getElementById('logStream').innerHTML=''; addLog('info', 'Logs cleared.');" class="text-xs text-gray-500 hover:text-gray-300">
+          Clear Logs
+        </button>
+      </div>
+
+      <div id="logStream" class="mt-4 max-h-60 overflow-y-auto pr-1">
+        <!-- Logs injected dynamically via app.js -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TRADE SUCCESS MODAL -->
+  <div id="tradeSuccessModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-panel p-6 max-w-md w-full border border-cyan-500/50 shadow-2xl shadow-cyan-500/20 relative animate-pulse-glow">
+      <div class="text-center mb-4">
+        <div class="w-12 h-12 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 text-xl mb-2">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">ZK-SNARK Trade Completed!</h3>
+        <p class="text-xs text-gray-400 mt-1">Decryption Key Authenticated & DAG Royalties Settled Atomically</p>
+      </div>
+
+      <div id="modalTradeDetails" class="bg-gray-950 p-4 rounded-xl border border-gray-800 mb-5">
+        <!-- Injected via app.js -->
+      </div>
+
+      <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs uppercase tracking-wider transition">
+        Continue Exploring Marketplace
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-gray-900 bg-[#070b12] py-6 text-center text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>ZK-MetaTrade: Research Implementation for IEEE Transactions / Thesis Defense.</p>
+      <p class="mt-1 font-mono text-[11px] text-gray-600">Dual-Chain Architecture: Ethereum (zk-CFE Solidity 0.8.20) & Hyperledger Fabric v2.5</p>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>

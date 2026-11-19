@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZK-MetaTrade: Thesis Defense Presentation Slides</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #06090f;
+      color: #f1f5f9;
+      overflow: hidden;
+    }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    .slide {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      padding: 3rem 5rem;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 1;
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+    }
+
+    /* Print styles for Exporting to PDF */
+    @media print {
+      body { overflow: visible !important; }
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        page-break-after: always;
+        height: 100vh !important;
+        padding: 2rem !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="select-none">
+
+  <!-- TOP BAR: Controls & Info -->
+  <header class="no-print fixed top-0 left-0 right-0 h-14 bg-gray-950/80 backdrop-blur-md border-b border-gray-800 z-50 px-6 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-600 to-purple-600 flex items-center justify-center font-bold text-white shadow-md">
+        ZK
+      </div>
+      <span class="font-bold text-gray-300">ZK-MetaTrade: Thesis Defense Slides</span>
+      <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">IEEE Paper Presentation</span>
+    </div>
+
+    <!-- Slide Navigation & Tools -->
+    <div class="flex items-center gap-4">
+      <span id="slideCounter" class="font-mono text-gray-400 text-xs">Slide 1 / 15</span>
+      
+      <div class="flex items-center gap-1 bg-gray-900 border border-gray-800 rounded-lg p-1">
+        <button onclick="prevSlide()" title="Previous Slide (Left Arrow)" class="px-2.5 py-1 rounded hover:bg-gray-800 text-gray-300 hover:text-white transition">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <button onclick="nextSlide()" title="Next Slide (Right Arrow / Space)" class="px-2.5 py-1 rounded hover:bg-gray-800 text-gray-300 hover:text-white transition">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+
+      <button onclick="toggleNotes()" id="btnNotes" class="px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-800 hover:bg-gray-800 text-gray-300 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-note-sticky text-amber-400"></i> Notes (N)
+      </button>
+
+      <button onclick="toggleFullscreen()" class="px-3 py-1.5 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-400 hover:bg-cyan-900 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-expand"></i> Fullscreen (F)
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 1: TITLE SLIDE -->
+  <!-- ===================================================================== -->
+  <section class="slide active pt-20" id="slide1">
+    <div>
+      <span class="text-xs font-mono font-bold tracking-widest uppercase text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-800">
+        M.Sc. / B.Sc. Thesis Defense & Research Presentation
+      </span>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-white mt-6 leading-tight max-w-5xl">
+        <span class="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">ZK-MetaTrade:</span> A Provably Secure, Asynchronous, and Multi-Parent Royalty Framework for AI-Generated Content Trading in Metaverse
+      </h1>
+      <p class="text-lg text-gray-400 mt-4 max-w-3xl leading-relaxed">
+        Eliminating Poison Key attacks with Groth16 zk-SNARKs, enabling 24/7 autonomous proxy re-encryption, and orchestrating DAG multi-ancestor generative AI micro-royalties.
+      </p>
+    </div>
+
+    <div class="glass-card p-6 border-gray-800 flex flex-wrap items-center justify-between gap-6">
+      <div>
+        <div class="text-xs text-gray-500 uppercase font-bold tracking-wider">Candidate / Author</div>
+        <div class="text-base font-bold text-white mt-0.5">[Your Name]</div>
+        <div class="text-xs text-gray-400">Department of Computer Science & Engineering</div>
+      </div>
+      <div>
+        <div class="text-xs text-gray-500 uppercase font-bold tracking-wider">Baseline Reference</div>
+        <div class="text-base font-bold text-cyan-400 mt-0.5">MetaTrade (IEEE Access, Mar. 2024)</div>
+        <div class="text-xs text-gray-400">V. T. Truong et al. [10.1109/ACCESS.2024.3378949]</div>
+      </div>
+      <div>
+        <div class="text-xs text-gray-500 uppercase font-bold tracking-wider">Evaluation Testbeds</div>
+        <div class="text-base font-bold text-purple-400 mt-0.5">Ethereum (EVM) + Hyperledger Fabric</div>
+        <div class="text-xs text-gray-400">30 Raft Orderers + Circom alt_bn128 Precompiles</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 2: BACKGROUND & MOTIVATION -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide2">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">01. Problem Background</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">The Metaverse & The Rise of AI-Generated Content (AIGC)</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+      <div class="glass-card p-6 border-cyan-500/30">
+        <div class="w-10 h-10 rounded-xl bg-cyan-950 flex items-center justify-center text-cyan-400 mb-4 text-xl">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Exponential Demand</h3>
+        <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+          Virtual worlds require millions of 3D meshes, neural avatars, textures, and behavior models. Traditional manual creation (PGC/UGC) cannot scale; AIGC is the indispensable foundation.
+        </p>
+      </div>
+
+      <div class="glass-card p-6 border-purple-500/30">
+        <div class="w-10 h-10 rounded-xl bg-purple-950 flex items-center justify-center text-purple-400 mb-4 text-xl">
+          <i class="fa-solid fa-key"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Access vs. Scarcity (NFTs)</h3>
+        <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+          Unlike 1-of-1 collectibles, AIGCs are <strong>access-based digital files</strong>. Thousands of users concurrently license the same asset or AI weight checkpoint.
+        </p>
+      </div>
+
+      <div class="glass-card p-6 border-rose-500/30">
+        <div class="w-10 h-10 rounded-xl bg-rose-950 flex items-center justify-center text-rose-400 mb-4 text-xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">Centralization Trap</h3>
+        <p class="text-xs text-gray-400 mt-2 leading-relaxed">
+          Existing Digital Asset Management (DAM) platforms rely on trusted 3rd-party brokers, introducing Single Points of Failure (SPoF), high commissions (30%), and insider theft risks.
+        </p>
+      </div>
+    </div>
+
+    <div class="p-4 rounded-xl bg-gray-900/60 border border-gray-800 text-xs font-mono text-gray-300">
+      <span class="text-cyan-400 font-bold">Research Goal:</span> Design a completely decentralized, mathematically trust-free exchange protocol where buyer and seller cannot cheat each other, even without an arbitrator.
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 3: METATRADE BASELINE & CLAIM -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide3">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">02. State-of-the-Art Baseline</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">MetaTrade (IEEE Access 2024): The Commit-and-Compare Design</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-diagram-project text-cyan-400"></i> MetaTrade 3-Phase Exchange Protocol:
+        </h3>
+        <ul class="space-y-3 text-xs text-gray-300">
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-cyan-400 font-mono">1. Deposit:</span>
+            <span>Customer deposits license fee into <code>DigitalAssetContract.sol</code> escrow via <code>registerRequest()</code>.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-cyan-400 font-mono">2. Encrypt & Commit:</span>
+            <span>Seller encrypts data with $K^{sym}$, computes ciphertext hash $H = \text{SHA256}(D_{enc})$, encrypts key with buyer's public key $K_{signed}$, and posts to IPFS.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-cyan-400 font-mono">3. Compare:</span>
+            <span>Buyer downloads $D_{enc}$, computes $H_c$, and invokes <code>compareHashes(H_c)</code> on-chain.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="font-bold text-emerald-400 font-mono">4. Settle:</span>
+            <span>If $H_c == H$, contract releases funds to seller and grants key to buyer.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="glass-card p-6 border-amber-500/30">
+        <h3 class="text-base font-bold text-amber-400 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-quote-left"></i> MetaTrade's Academic Claim:
+        </h3>
+        <blockquote class="text-xs italic text-gray-300 border-l-2 border-amber-500 pl-3 leading-relaxed mb-4">
+          "MetaTrade eliminates the role of the trusted third party, without requiring trust assumptions among participants... security analysis reveals that the framework is resilient against trust-related attacks."
+        </blockquote>
+        <div class="p-3 rounded-lg bg-rose-950/60 border border-rose-800/60 text-xs text-rose-200">
+          <span class="font-bold">Our Finding:</span> This claim is <strong>mathematically broken</strong>. A malicious seller can extract 100% of the buyer's funds with zero penalty.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Reference: Truong et al., IEEE Access, vol. 12, pp. 41815–41828, Mar. 2024.</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 4: THE POISON KEY ATTACK (CRITICAL FLAW) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide4">
+    <div>
+      <div class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">03. Vulnerability Analysis</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Vulnerability 1: The "Poison Key" Fair-Exchange Exploit</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6 border-rose-600/40">
+        <h3 class="text-base font-bold text-rose-400 mb-2">Mathematical Formulation of the Attack</h3>
+        <p class="text-xs text-gray-300 leading-relaxed mb-3">
+          The smart contract checks only whether $H_c == H$ (ciphertext hash match). It <strong>cannot verify whether the submitted key actually decrypts the ciphertext!</strong>
+        </p>
+        <div class="bg-black/80 p-3 rounded-lg border border-gray-800 text-[11px] font-mono space-y-1 text-gray-300">
+          <div>1. Malicious seller generates true key $K^{real} \to D_{enc}$.</div>
+          <div>2. Ciphertext commitment: $H = \text{SHA256}(D_{enc})$.</div>
+          <div>3. Seller crafts <span class="text-rose-400 font-bold">Poison Key: $K^{poison} \neq K^{real}$</span>.</div>
+          <div>4. Encrypts $K^{poison} \to K_{signed}^{bogus} = \text{Enc}_{pk_B}(K^{poison})$.</div>
+          <div>5. Buyer downloads $D_{enc}$, confirms $H_c \equiv H$!</div>
+          <div>6. Contract releases 1.0 ETH to Malicious Seller!</div>
+          <div>7. Decryption: $\text{AES-GCM}(D_{enc}, K^{poison}) \to \mathbf{FAIL}$.</div>
+        </div>
+      </div>
+
+      <div class="glass-card p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white mb-2">Live Proof-of-Concept Results</h3>
+          <p class="text-xs text-gray-400 mb-4">
+            We executed our automated PoC (<code>test/poc_poison_key_attack.js</code>) against MetaTrade's official Solidity contract:
+          </p>
+          <div class="p-3 rounded-lg bg-rose-950/40 border border-rose-900/60 text-xs space-y-2">
+            <div class="flex justify-between font-mono">
+              <span class="text-gray-400">Seller Balance:</span>
+              <span class="text-emerald-400 font-bold">+1.0 ETH (Extracted)</span>
+            </div>
+            <div class="flex justify-between font-mono">
+              <span class="text-gray-400">Buyer Escrow:</span>
+              <span class="text-rose-400 font-bold">0 ETH (Lost Forever)</span>
+            </div>
+            <div class="flex justify-between font-mono">
+              <span class="text-gray-400">Decryption Status:</span>
+              <span class="text-rose-400 font-bold">Authentication Tag Mismatch</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[11px] text-rose-300 font-semibold p-2.5 rounded bg-rose-900/20 border border-rose-800/40 mt-4">
+          Conclusion: MetaTrade completely fails Strong Fair Exchange. Honest buyers bear 100% of the counterparty risk.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Verified in Node.js v22 on EVM Local Testbed</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 5: LIMITATIONS 2 & 3 (LATENCY & SINGLE PARENT) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide5">
+    <div>
+      <div class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">04. Vulnerability Analysis</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Vulnerabilities 2 & 3: Synchronous Bottleneck & Monolithic Royalties</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <!-- Bottleneck -->
+      <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="w-8 h-8 rounded-lg bg-amber-950 text-amber-400 flex items-center justify-center font-bold text-sm">#2</span>
+          <h3 class="text-base font-bold text-white">Synchronous Seller Online Bottleneck</h3>
+        </div>
+        <p class="text-xs text-gray-300 leading-relaxed mb-3">
+          MetaTrade requires the seller to actively listen to blockchain events, fetch the buyer's public key, encrypt the symmetric key, and invoke <code>grantAccess()</code> on-chain for <strong>every individual purchase</strong>.
+        </p>
+        <div class="p-3 rounded-lg bg-black/60 border border-gray-800 text-[11px] font-mono text-gray-400 space-y-1">
+          <div>• If seller sleeps/disconnects: Buyer funds locked indefinitely.</div>
+          <div>• High latency: Trading cannot scale to metaverse demand.</div>
+          <div>• Violates non-interactive electronic commerce requirements.</div>
+        </div>
+      </div>
+
+      <!-- Single Parent -->
+      <div class="glass-card p-6">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="w-8 h-8 rounded-lg bg-purple-950 text-purple-400 flex items-center justify-center font-bold text-sm">#3</span>
+          <h3 class="text-base font-bold text-white">Monolithic Single-Parent Royalty Constraint</h3>
+        </div>
+        <p class="text-xs text-gray-300 leading-relaxed mb-3">
+          Modern AIGC models are inherently <strong>compositional</strong> (Base SDXL + Style LoRA + ControlNet Depth Rig + Prompts). MetaTrade declares:
+        </p>
+        <div class="p-2.5 rounded bg-black/70 border border-gray-800 text-[11px] font-mono text-purple-300 mb-3">
+          DigitalAssetContract public parentAsset; // Exactly ONE parent!
+        </div>
+        <p class="text-xs text-gray-400">
+          Only 1 parent address can receive commissions. Multi-tier contributors, pipeline orchestrators, and adapter trainers are left completely uncompensated.
+        </p>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Source Code Reference: DigitalAssetContract.sol (lines 20–25)</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 6: FABRIC CONCURRENCY HAZARDS (DISCOVERED ON LIVE TESTBED) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide6">
+    <div>
+      <div class="text-xs font-mono font-bold text-rose-400 uppercase tracking-wider">05. Consortium Blockchain Audit</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Vulnerabilities in MetaTrade's Hyperledger Fabric Chaincode</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6 border-rose-500/30">
+        <h3 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-ghost"></i> Read-Your-Own-Writes (RYOW) Ghost Token Inflation
+        </h3>
+        <p class="text-xs text-gray-300 leading-relaxed mb-2">
+          In Fabric, <code>getState()</code> reads uncommitted snapshot DB values. Calling <code>_transfer</code> twice from escrow in one transaction causes the second transfer to read stale state ($100$ instead of $90$), writing $100 - 90 = 10$ into escrow!
+        </p>
+        <div class="p-2.5 rounded bg-black/60 font-mono text-[11px] text-amber-300 border border-amber-900/50">
+          Empirical Result: Total supply inflated from 1000 to 1010 tokens out of thin air!
+        </div>
+      </div>
+
+      <div class="glass-card p-6 border-rose-500/30">
+        <h3 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-lock"></i> Re-Registration Escrow Locking Bug
+        </h3>
+        <p class="text-xs text-gray-300 leading-relaxed mb-2">
+          <code>registerRequest</code> transferred funds to composite escrow before checking if <code>reqId</code> existed. Duplicate or retried invocations accumulated multiple deposits, but <code>compareHashes</code> only disbursed one <code>req.price</code>!
+        </p>
+        <div class="p-2.5 rounded bg-black/60 font-mono text-[11px] text-rose-400 border border-rose-900/50">
+          Empirical Result: 100 tokens permanently locked in digital_asset_req_car1 with zero refund path!
+        </div>
+      </div>
+    </div>
+
+    <div class="p-3 rounded-lg bg-gray-900 border border-gray-800 text-xs font-mono text-gray-300">
+      <span class="text-emerald-400 font-bold">Thesis Finding:</span> Proved live on our 30-orderer Raft consortium testbed. Both vulnerabilities resolved via our <code>_transferMulti</code> aggregation engine.
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 7: PROPOSED ZK-METATRADE ARCHITECTURE -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide7">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">06. Proposed Architecture</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">The ZK-MetaTrade Framework Overview</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+      <div class="glass-card p-5 border-cyan-500/40">
+        <div class="text-cyan-400 text-sm font-bold mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-shield-halved"></i> 1. zk-CFE Engine
+        </div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Zero-Knowledge Contingent Fair Exchange. Groth16 zk-SNARK binding encrypted key to ciphertext commitment before payment release.
+        </p>
+      </div>
+
+      <div class="glass-card p-5 border-purple-500/40">
+        <div class="text-purple-400 text-sm font-bold mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-arrows-split-up-and-left"></i> 2. DAG Royalties
+        </div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Directed Acyclic Graph recursive micro-royalties, equitably crediting foundation models, style LoRAs, and prompt engineers in one atomic tx.
+        </p>
+      </div>
+
+      <div class="glass-card p-5 border-emerald-500/40">
+        <div class="text-emerald-400 text-sm font-bold mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-bolt"></i> 3. Autonomous PRE
+        </div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Threshold Proxy Re-Encryption. Seller uploads once to IPFS; buyers atomically acquire personalized decryption keys 24/7 without seller online.
+        </p>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 border-gray-800 flex items-center justify-between text-xs font-mono">
+      <span class="text-gray-400">System Architecture Reference:</span>
+      <span class="text-cyan-400 font-bold">[Figure 1: 5 Entities, EIP-1167 Clones, Staked PoP Governance]</span>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 8: CORE CONTRIBUTION 1 (zk-CFE FORMULATION) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide8">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">07. Core Contribution 1</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Zero-Knowledge Contingent Fair Exchange (zk-CFE)</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-cyan-400 mb-3">Circom Arithmetic Circuit Constraints</h3>
+        <p class="text-xs text-gray-300 mb-3">
+          Our circuit <code>fair_exchange.circom</code> enforces three non-negotiable relations in $O(1)$ verification time:
+        </p>
+        <div class="bg-black/80 p-3 rounded-lg border border-gray-800 text-[11px] font-mono space-y-2 text-gray-300">
+          <div><span class="text-cyan-400">Constraint 1:</span> Key Well-Formedness: $K^{sym} \in \mathbb{F}_p^*$</div>
+          <div><span class="text-purple-400">Constraint 2:</span> Key Encapsulation:<br>$K_{enc}^{pub} == \text{Poseidon}(K^{sym}, pk_B, r)$</div>
+          <div><span class="text-emerald-400">Constraint 3:</span> Ciphertext Binding:<br>$C_{hash} == \text{Poseidon}(D_{sample}, K^{sym})$</div>
+        </div>
+      </div>
+
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-purple-400 mb-3">On-Chain Pairing Verification</h3>
+        <p class="text-xs text-gray-300 mb-3">
+          The smart contract evaluates the Groth16 bilinear pairing check over BN254 / alt_bn128 curve precompile:
+        </p>
+        <div class="bg-black/80 p-3 rounded-lg border border-gray-800 text-[11px] font-mono text-purple-300 mb-3">
+          e(A, B) == e(α, β) · e(x, γ) · e(C, δ)
+        </div>
+        <ul class="text-xs text-gray-300 space-y-1.5">
+          <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> If Proof Valid: Disburse payment atomically.</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-xmark text-rose-400"></i> If Proof Invalid (Poison Key): Revert tx immediately.</li>
+          <li class="flex items-center gap-2"><i class="fa-solid fa-shield text-cyan-400"></i> Zero financial loss for buyer guaranteed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Circuits implemented in Circom 2.1.6; Verifier deployed via Solidity 0.8.20</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 9: CORE CONTRIBUTION 2 (DAG ROYALTY ENGINE) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide9">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">08. Core Contribution 2</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Multi-Parent DAG Micro-Royalty Distribution Engine</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-purple-400 mb-2">Mathematical Formulation</h3>
+        <p class="text-xs text-gray-300 mb-3">
+          Let asset $\mathcal{A}$ depend on $k$ ancestor models $\mathcal{P} = \{P_1, \dots, P_k\}$ with weights $\mathbf{w} = [w_1, \dots, w_k]$ in basis points ($\sum w_i \le 5000$).
+        </p>
+        <div class="bg-black/80 p-3 rounded-lg border border-gray-800 text-[11px] font-mono space-y-2 text-gray-300">
+          <div>\text{Royalty}(P_i) = \frac{P \cdot w_i}{10000}, \quad \forall i \in \{1, \dots, k\}</div>
+          <div>\text{Payout}(\mathcal{S}) = P - \sum_{i=1}^k \text{Royalty}(P_i)</div>
+        </div>
+        <p class="text-xs text-gray-400 mt-3">
+          Executed via iterative low-level transfers to each parent contract, updating balances deterministically in $O(k)$ time.
+        </p>
+      </div>
+
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-cyan-400 mb-2">Live 3-Parent Composition Example</h3>
+        <div class="space-y-2 text-xs">
+          <div class="p-2.5 rounded bg-purple-950/40 border border-purple-800/40 flex justify-between font-mono">
+            <span>SDXL 1.0 Foundation Model:</span>
+            <span class="text-purple-400 font-bold">10% (0.10 ETH)</span>
+          </div>
+          <div class="p-2.5 rounded bg-pink-950/40 border border-pink-800/40 flex justify-between font-mono">
+            <span>Cyberpunk Style LoRA:</span>
+            <span class="text-pink-400 font-bold">10% (0.10 ETH)</span>
+          </div>
+          <div class="p-2.5 rounded bg-amber-950/40 border border-amber-800/40 flex justify-between font-mono">
+            <span>ControlNet Depth Rig:</span>
+            <span class="text-amber-400 font-bold">5% (0.05 ETH)</span>
+          </div>
+          <div class="p-2.5 rounded bg-emerald-950/40 border border-emerald-800/40 flex justify-between font-mono font-bold">
+            <span class="text-white">Synthesizer / Seller Net Payout:</span>
+            <span class="text-emerald-400">75% (0.75 ETH)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Tested with up to 10 recursive DAG ancestors in DAGMarketplace.sol</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 10: CORE CONTRIBUTION 3 (FABRIC RYOW REMEDIATION) -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide10">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">09. Core Contribution 3</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Fabric Concurrency Remediation: Atomic In-Memory Multi-Transfer</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-cyan-400 mb-2">The _transferMulti Solution</h3>
+        <p class="text-xs text-gray-300 mb-3">
+          To overcome Fabric's Read-Your-Own-Writes limitation, we engineered <code>_transferMulti(ctx, from, transfers)</code> inside <code>tokenERC20.js</code>:
+        </p>
+        <div class="bg-black/80 p-3 rounded-lg border border-gray-800 text-[10px] font-mono text-gray-300 space-y-1">
+          <div>1. Checks <span class="text-amber-400">fromBalance >= total</span> (Insufficient funds check)</div>
+          <div>2. Accumulates recipient balances in-memory via <span class="text-purple-400">Map()</span></div>
+          <div>3. Updates fromKey ONCE: <span class="text-emerald-400">fromBalance - total</span></div>
+          <div>4. Flushes each unique recipient's balance ONCE to state DB.</div>
+        </div>
+      </div>
+
+      <div class="glass-card p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold text-white mb-2">Empirical Verification on 30 Raft Orderers</h3>
+          <p class="text-xs text-gray-400 mb-3">
+            Deployed on Hyperledger Fabric v2.5.16 test-network with 30 orderer nodes and 2 peer organizations:
+          </p>
+          <div class="p-3 rounded-lg bg-gray-900 border border-gray-800 font-mono text-xs space-y-1.5">
+            <div class="flex justify-between"><span>Buyer (Org1 Admin):</span><span class="text-cyan-400 font-bold">850</span></div>
+            <div class="flex justify-between"><span>Seller (Org2 User1):</span><span class="text-emerald-400 font-bold">90</span></div>
+            <div class="flex justify-between"><span>Parent (Org2 Admin):</span><span class="text-purple-400 font-bold">60</span></div>
+            <div class="flex justify-between"><span>Escrow Accounts:</span><span class="text-gray-400 font-bold">0</span></div>
+            <div class="flex justify-between border-t border-gray-800 pt-1 text-emerald-400 font-bold">
+              <span>Total System Tokens:</span><span>1000 (Exact Conservation)</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[11px] text-emerald-400 font-semibold p-2 rounded bg-emerald-950/40 border border-emerald-800/40 mt-3">
+          Ghost Token Inflation: 100% Eliminated. Ledger Conservation Verified.
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between text-xs text-gray-500 font-mono">
+      <span>Consortium testbed logs: test-network on WSL2 Ubuntu-22.04</span>
+      <a href="../figures/view_architecture.html" target="_blank" class="text-cyan-400 hover:text-cyan-300 font-bold underline flex items-center gap-1">
+        <span>View Fig 5 Enterprise Architecture</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 11: GAS BENCHMARKS & EVALUATION -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide11">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">10. Performance & Gas Evaluation</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">On-Chain Gas Consumption & Financial Cost Analysis</h2>
+    </div>
+
+    <div class="glass-card p-6 my-auto overflow-x-auto">
+      <table class="w-full text-left text-xs font-mono">
+        <thead class="text-gray-400 border-b border-gray-800 pb-2">
+          <tr>
+            <th class="py-2">Contract Operation</th>
+            <th class="py-2">MetaTrade Gas [1]</th>
+            <th class="py-2 text-cyan-400">ZK-MetaTrade Gas (Ours)</th>
+            <th class="py-2">Overhead</th>
+            <th class="py-2 text-right">Cost (USD @ 10 gwei, $1894/ETH)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800/60 text-gray-300">
+          <tr>
+            <td class="py-2.5">listAsset (EIP-1167 Clone)</td>
+            <td class="py-2.5 text-gray-500">159,133</td>
+            <td class="py-2.5 text-cyan-300 font-bold">164,220</td>
+            <td class="py-2.5">+3.2%</td>
+            <td class="py-2.5 text-right">$3.11</td>
+          </tr>
+          <tr>
+            <td class="py-2.5">registerRequest (Escrow)</td>
+            <td class="py-2.5 text-gray-500">59,082</td>
+            <td class="py-2.5 text-cyan-300 font-bold">61,450</td>
+            <td class="py-2.5">+4.0%</td>
+            <td class="py-2.5 text-right">$1.16</td>
+          </tr>
+          <tr>
+            <td class="py-2.5">grantAccessZK (ecPairing)</td>
+            <td class="py-2.5 text-gray-500">101,676</td>
+            <td class="py-2.5 text-purple-300 font-bold">289,540</td>
+            <td class="py-2.5">+184.7%</td>
+            <td class="py-2.5 text-right">$5.48</td>
+          </tr>
+          <tr>
+            <td class="py-2.5">compareHashes (3 DAG Splits)</td>
+            <td class="py-2.5 text-gray-500">89,875</td>
+            <td class="py-2.5 text-cyan-300 font-bold">114,320</td>
+            <td class="py-2.5">+27.2%</td>
+            <td class="py-2.5 text-right">$2.16</td>
+          </tr>
+          <tr>
+            <td class="py-2.5">withdrawFund</td>
+            <td class="py-2.5 text-gray-500">28,549</td>
+            <td class="py-2.5 text-cyan-300 font-bold">29,110</td>
+            <td class="py-2.5">+1.9%</td>
+            <td class="py-2.5 text-right">$0.55</td>
+          </tr>
+          <tr class="font-bold text-white bg-gray-900/60">
+            <td class="py-3">Total Full Operation Cycle</td>
+            <td class="py-3 text-gray-400">250,633</td>
+            <td class="py-3 text-emerald-400 font-bold">465,310</td>
+            <td class="py-3 text-emerald-400">+85.6%</td>
+            <td class="py-3 text-right text-emerald-400">$8.81</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="p-3 rounded-lg bg-gray-900 border border-gray-800 text-xs text-gray-300">
+      <span class="text-cyan-400 font-bold">Trade-Off Analysis:</span> MetaTrade had lower gas ONLY because it omitted cryptographic key verification. Paying ~$8.81 total for complete, mathematically guaranteed Strong Fair Exchange is highly acceptable for high-value AIGC assets.
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 12: FORMAL SECURITY & GAME THEORY -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide12">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">11. Security & Game Theory</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Formal Proofs & Strict Nash Equilibrium</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-cyan-400 mb-2">Strong Fair Exchange Theorem</h3>
+        <p class="text-xs text-gray-300 leading-relaxed mb-3">
+          <strong>Theorem:</strong> <em>ZK-MetaTrade guarantees Strong Fair Exchange.</em>
+        </p>
+        <ul class="text-xs text-gray-300 space-y-2">
+          <li><strong>Knowledge Soundness of Groth16:</strong> Generating proof $\pi$ for an invalid key requires discrete log over BN254 with probability $\le \text{negl}(\lambda)$.</li>
+          <li><strong>Atomic Settlement:</strong> Escrow disburses funds if and only if buyer receives a verified, decryptable symmetric key.</li>
+          <li><strong>No Arbitrator:</strong> Neutralizes disputes deterministically on-chain without third-party human or oracle bias.</li>
+        </ul>
+      </div>
+
+      <div class="glass-card p-6">
+        <h3 class="text-sm font-bold text-purple-400 mb-2">Strict Nash Equilibrium Payoff</h3>
+        <div class="overflow-x-auto my-2">
+          <table class="w-full text-center text-xs font-mono border border-gray-800">
+            <thead class="bg-gray-900 text-gray-400">
+              <tr>
+                <th class="p-2 border border-gray-800">Seller \ Buyer</th>
+                <th class="p-2 border border-gray-800">Honest Buy</th>
+                <th class="p-2 border border-gray-800">Abort</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2 font-bold text-gray-300 border border-gray-800">Honest Key + Proof</td>
+                <td class="p-2 bg-emerald-950/40 text-emerald-300 font-bold border border-gray-800">(P - C_s, V_b - P) ★</td>
+                <td class="p-2 text-gray-500 border border-gray-800">(0, -G_b)</td>
+              </tr>
+              <tr>
+                <td class="p-2 font-bold text-gray-300 border border-gray-800">Poison Key Attack</td>
+                <td class="p-2 bg-rose-950/40 text-rose-300 border border-gray-800">(-G_revert, 0)</td>
+                <td class="p-2 text-gray-500 border border-gray-800">(0, -G_b)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-[11px] text-gray-400 mt-2">
+          Under MetaTrade, cheating payoff was positive ($+P$). Under ZK-MetaTrade, cheating yields strictly negative payoff ($-G_{revert} < 0$). Thus, <strong>(Honest Key + Proof, Honest Buy) is the Unique Strict Nash Equilibrium.</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Formal security proofs detailed in docs/03_Formal_Security_and_Game_Theoretic_Proof.md</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 13: INTERACTIVE DAPP SHOWCASE -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide13">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">12. Practical Implementation</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">The ZK-MetaTrade Interactive DApp Suite</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto">
+      <div class="glass-card p-5 border-cyan-500/30">
+        <div class="text-cyan-400 text-sm font-bold mb-2">1. Live Attack & Defense Lab</div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Interactive split-screen interface allowing professors and reviewers to execute the Poison Key exploit live and observe the ZK-verifier block it.
+        </p>
+      </div>
+
+      <div class="glass-card p-5 border-purple-500/30">
+        <div class="text-purple-400 text-sm font-bold mb-2">2. Dynamic DAG Visualizer</div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Real-time animated token routing across foundation models (10%), LoRAs (10%), and ControlNets (5%), updating balances live.
+        </p>
+      </div>
+
+      <div class="glass-card p-5 border-emerald-500/30">
+        <div class="text-emerald-400 text-sm font-bold mb-2">3. Audit Trail Log Stream</div>
+        <p class="text-xs text-gray-300 leading-relaxed">
+          Full cryptographic telemetry displaying SHA-256 hashes, pairing equation results, and token conservation proofs.
+        </p>
+      </div>
+    </div>
+
+    <div class="glass-card p-4 border-gray-800 flex items-center justify-between text-xs font-mono">
+      <span class="text-gray-400">DApp Launch Path:</span>
+      <span class="text-cyan-400 font-bold">G:\gdownloads\ll\ZK-MetaTrade-Thesis\run_dapp.bat (Double-Click to Launch)</span>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 14: SUMMARY OF COMPARISONS -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide14">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">13. State-of-the-Art Comparison</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Comprehensive Comparison with Existing DAM Frameworks</h2>
+    </div>
+
+    <div class="glass-card p-6 my-auto overflow-x-auto">
+      <table class="w-full text-left text-xs font-mono">
+        <thead class="text-gray-400 border-b border-gray-800 pb-2">
+          <tr>
+            <th class="py-2">Dimension</th>
+            <th class="py-2">MetaTrade (IEEE '24)</th>
+            <th class="py-2">FAST DATA [IEEE'23]</th>
+            <th class="py-2">SPChain [IEEE'22]</th>
+            <th class="py-2 text-cyan-400">ZK-MetaTrade (Ours)</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800/60 text-gray-300">
+          <tr>
+            <td class="py-2.5 font-bold">Poison Key Defense</td>
+            <td class="py-2.5 text-rose-400 font-bold">❌ Broken</td>
+            <td class="py-2.5 text-rose-400">❌ No</td>
+            <td class="py-2.5 text-rose-400">❌ No</td>
+            <td class="py-2.5 text-emerald-400 font-bold">✅ Provably Guaranteed</td>
+          </tr>
+          <tr>
+            <td class="py-2.5 font-bold">Asynchronous Trading (24/7)</td>
+            <td class="py-2.5 text-rose-400">❌ No (Seller Online)</td>
+            <td class="py-2.5 text-rose-400">❌ No</td>
+            <td class="py-2.5 text-rose-400">❌ No</td>
+            <td class="py-2.5 text-emerald-400 font-bold">✅ Yes (Threshold PRE)</td>
+          </tr>
+          <tr>
+            <td class="py-2.5 font-bold">Multi-Ancestor Royalties</td>
+            <td class="py-2.5 text-amber-400">⚠️ Single Parent</td>
+            <td class="py-2.5 text-rose-400">❌ None</td>
+            <td class="py-2.5 text-rose-400">❌ None</td>
+            <td class="py-2.5 text-emerald-400 font-bold">✅ Recursive DAG (k-Tier)</td>
+          </tr>
+          <tr>
+            <td class="py-2.5 font-bold">Plagiarism Governance</td>
+            <td class="py-2.5 text-rose-400">❌ Centralized Owner</td>
+            <td class="py-2.5 text-rose-400">❌ None</td>
+            <td class="py-2.5 text-rose-400">❌ None</td>
+            <td class="py-2.5 text-emerald-400 font-bold">✅ Staked Observer PoP</td>
+          </tr>
+          <tr>
+            <td class="py-2.5 font-bold">Fabric RYOW Anomaly</td>
+            <td class="py-2.5 text-rose-400">❌ Token Inflation</td>
+            <td class="py-2.5 text-gray-500">N/A</td>
+            <td class="py-2.5 text-gray-500">N/A</td>
+            <td class="py-2.5 text-emerald-400 font-bold">✅ Resolved (_transferMulti)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono">Consolidated benchmark from Table I & Table II of thesis manuscript</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE 15: CONCLUSION & Q&A -->
+  <!-- ===================================================================== -->
+  <section class="slide pt-20" id="slide15">
+    <div>
+      <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">14. Conclusion & Impact</div>
+      <h2 class="text-3xl font-extrabold text-white mt-2">Summary of Research Contributions & Deliverables</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+      <div class="glass-card p-6">
+        <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-trophy text-amber-400"></i> Key Milestones Achieved:
+        </h3>
+        <ul class="text-xs text-gray-300 space-y-2.5">
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">1.</span>
+            <span>Uncovered and mathematically formalized the <strong>Poison Key Attack</strong> in MetaTrade (IEEE Access '24).</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">2.</span>
+            <span>Designed and implemented <strong>zk-CFE</strong> (Circom circuits + Solidity pairing verifiers), restoring Strong Fair Exchange.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">3.</span>
+            <span>Engineered a <strong>DAG multi-parent royalty engine</strong>, equitably compensating modern compositional AI models.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">4.</span>
+            <span>Audited Hyperledger Fabric v2.5 across 30 Raft orderers, resolving the RYOW token inflation hazard.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">5.</span>
+            <span>Delivered full thesis manuscript, 300 DPI figures, summary PDF, and an interactive DApp suite.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="glass-card p-6 text-center flex flex-col justify-center items-center">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center text-white text-3xl mb-4 shadow-xl shadow-cyan-500/20">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <h3 class="text-2xl font-extrabold text-white">Thank You!</h3>
+        <p class="text-xs text-gray-400 mt-2 max-w-xs">
+          Questions, Feedback & Committee Discussion
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3 justify-center text-xs font-mono">
+          <a href="../dapp/index.html" target="_blank" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-play"></i> Open Live DApp Demo
+          </a>
+          <a href="../ZK_MetaTrade_Thesis_Full_Report.pdf" target="_blank" class="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-file-pdf"></i> View Full Report PDF
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 font-mono text-center">ZK-MetaTrade: Thesis Defense & Research Presentation</div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SPEAKER NOTES DRAWER (PRESS 'N' TO TOGGLE) -->
+  <!-- ===================================================================== -->
+  <aside id="speakerNotesDrawer" class="no-print fixed bottom-0 left-0 right-0 max-h-56 bg-gray-950/95 border-t border-gray-800 backdrop-blur-md p-4 z-40 hidden overflow-y-auto">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between pb-2 border-b border-gray-800 mb-2">
+        <span class="text-xs font-mono font-bold text-amber-400 flex items-center gap-2">
+          <i class="fa-solid fa-clipboard"></i> Speaker Notes & Defense Talking Points (Slide <span id="notesSlideNumber">1</span>)
+        </span>
+        <button onclick="toggleNotes()" class="text-gray-500 hover:text-gray-300 text-xs">Close (N)</button>
+      </div>
+      <div id="notesContent" class="text-xs text-gray-300 leading-relaxed font-sans">
+        <!-- Dynamically injected -->
+      </div>
+    </div>
+  </aside>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 15;
+
+    const speakerNotes = {
+      1: "স্বাগতম সবাইকে। এই স্লাইডে পেপারের শিরোনাম, লেখকের নাম এবং গবেষণার মূল উদ্দেশ্য উপস্থাপন করবেন। বলবেন: 'আজকে আমি মেটাভার্সে এআই-জেনারেটেড কন্টেন্ট কেনাবেচার ক্ষেত্রে একটি নিরাপদ ও মাল্টি-প্যারেন্ট রয়্যালটি ফ্রেমওয়ার্ক ZK-MetaTrade উপস্থাপন করছি, যা IEEE Access 2024-এ প্রকাশিত মেটাট্রেডের মারাত্মক ত্রুটিগুলো সমাধান করে।'",
+      2: "মেটাভার্সে AIGC-এর ভূমিকা ব্যাখ্যা করুন। উল্লেখ করবেন যে AIGC প্রচলিত ১-অফ-১ NFT-এর মতো নয়, এটি লাইসেন্সভিত্তিক এবং একাধিক ব্যবহারকারী একই সাথে অ্যাক্সেস নেন। সেন্ট্রালাইজড সিস্টেমের ৩০% কমিশন ও SPoF-এর ঝুঁকি তুলে ধরবেন।",
+      3: "আগের স্টেট-অফ-দি-আর্ট মেটাট্রেড পেপারের কাজের মেকানিজম ব্যাখ্যা করবেন। ৩-ফেজ প্রোটোকল: ডিপোজিট, এনক্রিপ্ট ও হ্যাশ কম্পেয়ার। তাদের 'Trust-Free' দাবির কথা উল্লেখ করবেন।",
+      4: "থিসিসের মূল বোমশেল ফাইন্ডিং: Poison Key Attack! ডায়াগ্রামের দিকে ইঙ্গিত করে বলবেন: 'মেটাট্রেডের স্মার্ট কন্ট্রাক্ট অন্ধের মতো শুধু হ্যাশ চেক করে। সেলার চাইলে আসল ফাইলের হ্যাশ ঠিক রেখে ভেতরে ভুয়া কি ঢুকিয়ে দিতে পারে। এতে সেলার বায়ারের টাকা ঠিকই পেয়ে যায়, কিন্তু বায়ার আসল ফাইল পায় না।'",
+      5: "মেটাট্রেডের আরও দুটি সমস্যা: সেলারকে প্রতিটি বিক্রির জন্য অনলাইনে বসে থাকতে হয় (লেটেন্সি), এবং তারা কোডে লিখে রেখেছে 'parentAsset' মাত্র একটি, অথচ আসল জেনারেটিভ এআই-এ বেস মডেল, LoRA, এবং কন্ট্রোলনেট একাধিক প্যারেন্ট থাকে।",
+      6: "কনসোর্টিয়াম ব্লকচেইন (হাইপারলেজার ফ্যাব্রিক) অডিটের ফাইন্ডিং: ফ্যাব্রিকের Read-Your-Own-Writes সীমাবদ্ধতার কারণে মেটাট্রেডে ১০টি ঘোস্ট টোকেন সৃষ্টি হয়েছিল। এবং ডুপ্লিকেট রিকোয়েস্টে টাকা আটকে যেত।",
+      7: "আমাদের প্রস্তাবিত ZK-MetaTrade-এর ৩টি মূল স্তম্ভ সংক্ষেপে তুলে ধরবেন: zk-CFE ভেরিফায়ার, ডিএজি রয়্যালটি, এবং অটোনোমাস প্রক্সি রি-এনক্রিপশন।",
+      8: "Circom সার্কিট এবং অন-চেইন Groth16 পেয়ারিং ইকুয়েশন বুঝিয়ে বলবেন: 'আমাদের সার্কিটে কি-এনক্যাপসুলেশন ও সাইফারটেক্সট বাইন্ডিং নিশ্চিত করায় ভুয়া কি দিলে ট্রানজ্যাকশন রিভার্ট হয়ে যায়।'",
+      9: "মাল্টি-প্যারেন্ট DAG আর্কিটেকচার ব্যাখ্যা করবেন। দেখাবেন কীভাবে ১টি অ্যাসেট থেকে SDXL ১০%, LoRA ১০%, কন্ট্রোলনেট ৫% এবং সেলার ৭৫% পেল।",
+      10: "ফ্যাব্রিকের RYOW সমাধানের জন্য আমরা যে _transferMulti মেথড লিখেছি, তার মাধ্যমে মেমোরিতে ম্যাপ করে ব্যালেন্স কনজার্ভেশন (১০০০ টোকেন) নিশ্চিত করা হয়েছে।",
+      11: "গ্যাস খরচের তুলনা (Table II): আমাদের ZK ভেরিফিকেশনে ৪৬৫k গ্যাস খরচ হয় (মাত্র $8.81), যা পয়জন কি রোধ করার বিনিময়ে অত্যন্ত সাশ্রয়ী।",
+      12: "গেম থিওরি ও ন্যাশ ইকুইলিব্রিয়াম প্রমাণ: মেটাট্রেডে চিট করলে সেলারের লাভ হতো, কিন্তু ZK-MetaTrade-এ চিট করলে সেলারের গ্যাস লস হয়, তাই (Honest, Honest) হলো একমাত্র ইউনিক স্ট্রিক্ট ন্যাশ ইকুইলিব্রিয়াম।",
+      13: "ইন্টারঅ্যাক্টিভ DApp-এর বর্ণনা দিন। বলুন যে আমরা শুধুমাত্র তাত্ত্বিক পেপার লিখিনি, বরং একটি পূর্ণাঙ্গ লাইভ DApp তৈরি করেছি যা ব্রাউজারেই পরীক্ষা করা যায়।",
+      14: "স্টেট-অফ-দি-আর্টের সাথে সম্পূর্ণ টেবিল তুলনামূলক সারসংক্ষেপ।",
+      15: "ধন্যবাদ জানান এবং এক্সামিনারদের প্রশ্নের জন্য প্রস্তুত থাকুন। প্রয়োজনে লাইভ DApp ডেমো ওপেন করে দেখান।"
+    };
+
+    function updateSlide() {
+      document.querySelectorAll('.slide').forEach((s, idx) => {
+        s.classList.remove('active');
+        if (idx + 1 === currentSlide) s.classList.add('active');
+      });
+
+      document.getElementById('slideCounter').textContent = `Slide ${currentSlide} / ${totalSlides}`;
+      document.getElementById('notesSlideNumber').textContent = currentSlide;
+      document.getElementById('notesContent').textContent = speakerNotes[currentSlide] || "No notes for this slide.";
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function toggleNotes() {
+      const drawer = document.getElementById('speakerNotesDrawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'n' || e.key === 'N') {
+        toggleNotes();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullscreen();
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
